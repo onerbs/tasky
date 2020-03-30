@@ -1,9 +1,9 @@
-import React, {useRef} from 'react'
-import {Flex, Box, Text} from 'rebass'
-import Checkbox from './Checkbox'
+import React, { useRef } from 'react'
+import { Box, Flex, Text } from 'rebass'
+import { Input } from '@rebass/forms/styled-components'
 import styled from 'styled-components'
-import {Input} from '@rebass/forms/styled-components'
-import {Cloud} from './Database'
+import Checkbox from './Checkbox'
+import { Cloud } from './Database'
 
 export default class Task {
   id: string

@@ -1,6 +1,6 @@
 import React from 'react'
-import {Box} from 'rebass'
-import {CheckSquare, Square} from 'react-feather'
+import { CheckSquare, Square } from 'react-feather'
+import { Box } from 'rebass'
 
 const Checkbox = ({checked, toggle}: {
   checked: boolean

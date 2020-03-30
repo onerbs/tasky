@@ -1,7 +1,7 @@
-import React, {useEffect, useState} from 'react'
-import {Heading} from 'rebass'
-import Task, {Viewer} from './Task'
-import {Cloud} from './Database'
+import React, { useEffect, useState } from 'react'
+import { Heading } from 'rebass'
+import { Cloud } from './Database'
+import Task, { Viewer } from './Task'
 
 const Title = (props: any) =>
   <Heading
