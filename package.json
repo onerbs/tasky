@@ -4,7 +4,7 @@
   "private": true,
   "dependencies": {
     "@rebass/forms": "^4.0.6",
-    "dayjs": "^1.8.23",
+    "emotion-theming": "^10.0.27",
     "firebase": "^7.13.1",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
