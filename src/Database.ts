@@ -1,4 +1,5 @@
-import firebase from 'firebase'
+import firebase from 'firebase/app'
+import 'firebase/firestore'
 import Task from './Task'
 
 firebase.initializeApp({
@@ -13,21 +14,13 @@ firebase.initializeApp({
 
 export class Cloud {
   static tasks = firebase.firestore().collection('tasks')
-  static push = (task: Task): void => {
-    Cloud.tasks.add({...task})
+  static write = (task: Task): void => {
+    Cloud.tasks.doc(task.id).set({...task}, { merge: true })
   }
-}
-
-export class Local {
-  static tasks: Task[] = []
-  static rename = (id: string, new_name: string) => {
-    for (let task of Local.tasks)
-    if (task.id === id)
-    task.name = new_name
-  }
-  static update = (id: string, new_date: Date) => {
-    for (let task of Local.tasks)
-    if (task.id === id)
-    task.date = new_date
+  static retrieve = async () => {
+    let cloudTasks = await Cloud.tasks.get()
+    return cloudTasks.docs
+      .map(d => d.data())
+      .map(d => Task.fromDocument(d))
   }
 }
