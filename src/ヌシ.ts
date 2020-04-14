@@ -28,8 +28,8 @@ export const ヌシ = {
     heading: 1.25,
   },
   shadows: {
-    default: '0 0 3px 4px rgba(0, 0, 0, 0.4)',
-    large: '0 0 4px 6px rgba(0, 0, 0, 0.55)'
+    default: '0 0.385rem 1.15rem 2px rgba(0,0,0,0.44)',
+    large: '0 0.4rem 1rem 3px rgba(0,0,0,0.64)'
   },
   radii: {
     default: '3px',
