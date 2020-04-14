@@ -14,12 +14,10 @@
   },
   "fonts": {
     "body": "Inter, sans-serif",
-    "heading": "Inter, sans-serif",
-    "monospace": "Fira Code, monospace"
+    "heading": "Inter, sans-serif"
   },
   "fontSizes": [12, 14, 16, 22, 26, 32, 48, 64],
   "fontWeights": {
-    "light": 200,
     "body": 400,
     "bold": 600,
     "heading": 900
