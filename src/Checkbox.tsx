@@ -6,7 +6,7 @@ const Checkbox = ({checked, toggle}: {
   checked: boolean
   toggle: () => void
 }) =>
-  <Box onClick={toggle} mx={3}>
+  <Box onClick={toggle} ml={3}>
     {checked ? <CheckSquare/> : <Square/>}
   </Box>
 export default Checkbox
