@@ -1,21 +1,23 @@
 import React, { useState } from 'react'
 
-import { Box } from 'rebass'
-import { Calendar as CalendarIcon } from 'react-feather'
+import { Box, Button } from 'rebass'
 import Calendar from './Calendar'
 
 export const DatePicker = ({lang = 'en'}) => {
   const [active, setActive] = useState(false)
   return (<>
-    <CalendarIcon
-      cursor='pointer'
-      onClick={() => { setActive(!active) }}
-      />
+    <Button variant='outline' onClick={() => { setActive(!active) }}>
+      date
+    </Button>
     <Box
       display={active ? 'block' : 'none'}
       sx={{ position: 'absolute' }}
       >
-      <Calendar lang={lang}/>
+      <Calendar
+        hide={() => { setActive(!active) }}
+        active={active}
+        lang={lang}
+        />
     </Box>
   </>)
 }
