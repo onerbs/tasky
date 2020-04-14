@@ -26,9 +26,6 @@ export default class Task {
 const Title = styled(Input)`
   border: none;
   transition: border 0.4s ease;
-  &:disabled {
-    color: red;
-  }
   &:focus {
     box-shadow: 0 2px 0 0 black;
   }
