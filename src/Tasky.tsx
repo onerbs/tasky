@@ -1,32 +1,37 @@
-import React, { useEffect, useState } from 'react'
+import React, { Suspense, lazy, useEffect, useState } from 'react'
 import { Box, Heading } from 'rebass'
-import { Cloud } from './Database'
-import Task, { Viewer } from './Task'
 import { Menu, Plus } from 'react-feather'
-import { ThemeProvider } from 'emotion-theming'
-import Modal from './Modal'
+
+import Task, { Viewer } from './Task'
 import Controls from './Controls'
+
+import { ThemeProvider } from 'emotion-theming'
 import ヌシ from './ヌシ.json'
 
-const opt = (from: string, fb: string) => from ? from : fb
+import cloud from './Database'
+import strings from './strings'
+
+const Modal = lazy(() => import('./Modal'))
+
 export default () => {
 
-  const lang = useState(opt(document.documentElement.lang, 'en'))[0]
+  const [lang, setLang] = useState('es')
   const [localTasks, setLocalTasks] = useState(new Array<Task>())
   const [modalState, setModalState] = useState(false)
+  const [T, loadStrings] = useState(strings(lang))
 
-  useEffect(() => {
-    console.log('populating...')
-    Cloud.retrieve().then(setLocalTasks)
-  }, [])
+  const updateView = () => {
+    cloud.taskArray().then(setLocalTasks)
+  }
+
+  useEffect(() => { loadStrings(strings(lang)) }, [lang])
+  useEffect(updateView, [])
 
   return (
     <ThemeProvider theme={ヌシ}>
-      <Box
-        color='text'
+      <Box color='text'
         backgroundColor='back'
-        height='100vh'
-        paddingTop={3}
+        height='100vh' pt={3}
         >
         <Heading
           color='primary'
@@ -34,6 +39,7 @@ export default () => {
           marginBottom={['auto','auto','1.5rem']}
           textAlign='center'
           letterSpacing='heading'
+          onClick={() => { setLang(lang === 'en' ? 'es' : 'en') }} //!COMMIT
           sx={{
             position: 'absolute',
             bottom: 0,
@@ -43,7 +49,7 @@ export default () => {
           >
           Tasky
         </Heading>
-        <Viewer data={localTasks}/>
+        <Viewer T={T} data={localTasks}/>
         <div id="controls">
           <Controls
             LeftIcon={Menu}
@@ -53,11 +59,12 @@ export default () => {
             }}
             />
         </div>
-        <Modal
-          hide={() => { setModalState(false) }}
-          active={modalState}
-          lang={lang}
-          />
+        <Suspense fallback={<></>}>
+          {modalState && <Modal T={T}
+            hide={() => { setModalState(false) }}
+            updateview={updateView}
+            />}
+        </Suspense>
       </Box>
     </ThemeProvider>
   )

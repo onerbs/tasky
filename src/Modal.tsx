@@ -3,19 +3,29 @@ import { Box, Flex, Heading } from 'rebass'
 import { Input } from '@rebass/forms'
 
 import Controls from './Controls'
-import { DatePicker } from './components/DatePicker'
-import { TimePicker } from './components/TimePicker'
+import { DatePicker } from './DatePicker'
+import { TimePicker } from './TimePicker'
+import { TT } from './strings'
+import cloud from './Database'
+import Task from './Task'
 
-export default ({hide = () => {}, lang, active}: {
+export default ({updateview, hide = () => {}, T}: {
+  updateview: () => void,
   hide: () => void,
-  lang: string,
-  active: boolean
+  T: TT
 }) => {
-  console.log(active);
-
   const [taskValue, setTaskValue] = useState('')
+  const [date, setDate] = useState(() => {
+    let d = new Date()
+    return new Date(
+      d.getFullYear(),
+      d.getMonth(),
+      d.getDate()+1,
+      18, 30, 0, 0
+    )
+  })
   const taskInput = useRef(null)
-  return active ? (
+  return (
     <Flex
       alignItems='center'
       justifyContent='center'
@@ -40,7 +50,7 @@ export default ({hide = () => {}, lang, active}: {
           textAlign={'center'}
           letterSpacing={-1}
           >
-          New task
+          {T.task.create}
         </Heading>
         <Input
           ref={taskInput}
@@ -50,16 +60,18 @@ export default ({hide = () => {}, lang, active}: {
           py={3} sx={{ textAlign: 'center', fontSize: '1.15em' }}
           />
         <Flex my={3} alignItems='center' justifyContent='space-around'>
-          <DatePicker lang={lang}/>
-          <TimePicker lang={lang}/>
+          <DatePicker date={date} setDate={setDate} T={T}/>
+          <TimePicker date={date} setDate={setDate}/>
         </Flex>
         <Controls
+          leftAction={hide}
           rightAction={() => {
-            console.log(taskValue)
-            hide()
+            Task.create(taskValue, date).then(task => {
+              cloud.send(task, updateview, true)
+            }); hide()
           }}
           />
       </Box>
     </Flex>
-  ) : <></>
+  )
 }

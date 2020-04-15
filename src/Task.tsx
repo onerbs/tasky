@@ -1,97 +1,87 @@
-import React, { useRef, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { Box, Flex, Text } from 'rebass'
-import { Input } from '@rebass/forms/styled-components'
-import styled from 'styled-components'
-import Checkbox from './Checkbox'
-import { Cloud } from './Database'
-
-const newTaskID = () => `Task+${new Array(16).map(e => '0123456789'[Math.floor(Math.random() * 9)]).join('')}`
+import { Input } from '@rebass/forms'
+import { CheckSquare, Square } from 'react-feather'
+import { TT } from './strings'
+import cloud from './Database'
 
 export default class Task {
   id: string
   date: Date
   value: string
   checked: boolean
-  constructor(value: string, date: Date, id = newTaskID()) {
-    this.id = id;
+  constructor(value: string, date: Date, checked = false, id = '') {
+    this.id = `Task+1`
+    if (id) this.id = id
+    else {
+      cloud.state.get()
+        .then(snap => snap.data())
+        .then(data => data ? this.id = `Task+${data.counter}` : this.id)
+        .then(console.log)
+        .catch(console.log)
+    }
     this.date = date
     this.value = value
-    this.checked = false
+    this.checked = checked
   }
   toggle = () => { this.checked = !this.checked }
-  static fromDocument = (doc: firebase.firestore.DocumentData) =>
-    new Task(doc.value, new Date(doc.date.toMillis()), doc.id)
+  static create = async (value: string, date: Date) => {
+    return cloud.state.get()
+      .then(st => st.data())
+      .then(data => data ? `Task+${data.counter}` : 'Task+1')
+      .then(id => new Task(value, date, false, id))
+  }
+  static fromDocument = (data: firebase.firestore.DocumentData) =>
+    new Task(data.value, new Date(data.date.toMillis()), data.checked, data.id)
 }
 
-const Title = styled(Input)`
-  border: none;
-  transition: border 0.4s ease;
-  &:focus {
-    box-shadow: 0 2px 0 0 black;
-  }
-`
-const Item = ({id, date, value, checked}: {
-  id: string
-  date: Date
-  value: string
-  checked: boolean
-}) => {
-  const input = useRef(document.createElement('input'))
+const Item = ({task, T}: { task: Task, T: TT }) => {
+  const {id, value, date, checked} = task
   const [localValue, setLocalValue] = useState(value)
-  const update = (newValue = value, newDate = date) => {
-    Cloud.write(new Task(newValue, newDate, id))
+  const [localChecked, setLocalChecked] = useState(checked)
+  const input = useRef(document.createElement('input'))
+  const uv = (nova: string) => {
+    if (value !== nova) cloud.send(new Task(nova, date, localChecked, id))
   }
+  const fmtDate = (d: Date) =>
+    `${T.day.name[d.getDay()]}, ${T.month.name[d.getMonth()]} ${d.getDate()}`
+  useEffect(() => { setLocalValue(value) }, [value])
 return(
   <Flex
     p={3}
-    id={id}
     maxWidth='600px'
     margin='0 auto'
     alignItems='center'
     >
-    <Box
-        width={1}
-        >
-      <Title
-        mb={1}
-        disabled={true}
-        fontSize={[4,4,5]}
-        onChange={() => { setLocalValue(input.current.value) }}
-        onKeyPress={(e: KeyboardEvent) => { if (e.key === 'Enter' && value !== localValue) update(localValue) }}
-        onBlur={() => { if (value !== localValue) update(localValue) }}
-        padding={0}
-        ref={input}
-        type='text'
+    <Box width='100%'>
+      <Input type='text' ref={input}
+        p={0} mb={1} sx={{ border: 'none' }}
+        disabled={localChecked}
+        fontSize={[4, 4, 5]}
         value={localValue}
+        onBlur={() => { uv(localValue) }}
+        onChange={() => { setLocalValue(input.current.value) }}
+        onKeyPress={ev => { if (ev.key === 'Enter') uv(localValue) }}
         />
       <Text
         fontSize={[1, 1, 1, 2]}
         opacity={0.8}
         >
-        {date.toDateString()}
+        {fmtDate(date)}
       </Text>
     </Box>
-    <Checkbox
-      checked={checked}
-      toggle={() => { console.log('todo: complete!') }}
-      />
+    <Box ml={3} onClick={() => {
+      cloud.send(new Task(localValue, date, !localChecked, id))
+      setLocalChecked(!localChecked)
+    }}>{localChecked ? <CheckSquare/> : <Square/>}
+    </Box>
   </Flex>
 )}
 
-export const Viewer = ({data}: {data: Task[]}) => {
-  if (!data || data.length === 0) console.log('No tasks')
-  else console.log(`${data.length} task${data.length > 1 ? 's' : ''}`)
-  return(
+export const Viewer = ({data, T}: { data: Task[], T: TT }) => {
+  return data ? (
     <Box m={0}>
-      {data.map(({id, date, value, checked}) =>
-        <Item
-          id={id}
-          key={id}
-          date={date}
-          value={value}
-          checked={checked}
-          />
-      )}
+      {data.map(task => <Item key={task.id} task={task} T={T}/>)}
     </Box>
-   )
+   ) : <></>
 }

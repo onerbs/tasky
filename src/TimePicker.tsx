@@ -2,16 +2,25 @@ import React, { useRef, useState } from 'react'
 import { Button, Flex } from 'rebass'
 import { Input } from '@rebass/forms'
 
-export const TimePicker = () => {
-  const [hour, setHour] = useState(18)
-  const [mins, setMins] = useState(30)
+export const TimePicker = ({date, setDate}: {
+  date: Date,
+  setDate: any
+}) => {
   const [active, setActive] = useState(false)
   const inputHour = useRef(document.createElement('input'))
   const inputMins = useRef(document.createElement('input'))
+  const setTime = (h: number, m: number) => {
+    setDate(new Date(
+      date.getFullYear(),
+      date.getMonth(),
+      date.getDate(), h, m
+    ))
+  }
   return (
     <div>
-      <Button variant='outline' onClick={() => { setActive(!active) }}>
-        {hour}:{mins}
+      <Button variant='ghost' onClick={() => { setActive(!active) }}>
+        {[date.getHours() < 10 ? `0${date.getHours()}` : date.getHours(),
+        date.getMinutes() < 10 ? `0${date.getMinutes()}` : date.getMinutes()].join(':')}
       </Button>
       <Flex
         backgroundColor='text' color='back'
@@ -29,18 +38,22 @@ export const TimePicker = () => {
         <Input p={0}
           type='number'
           fontSize={[6, 7]}
-          value={hour}
+          value={date.getHours()}
           min={0} max={23}
           sx={{ fontWeight: 'bold', textAlign: 'center' }}
-          ref={inputHour} onChange={() => { setHour(parseInt(inputHour.current.value)) }}
+          ref={inputHour} onChange={() => {
+            setTime(parseInt(inputHour.current.value), date.getMinutes())
+          }}
           />
         <Input p={0}
           type='number'
           fontSize={[6, 7]}
-          value={mins}
+          value={date.getMinutes()}
           min={0} max={59}
           sx={{ textAlign: 'center' }}
-          ref={inputMins} onChange={() => { setMins(parseInt(inputMins.current.value)) }}
+          ref={inputMins} onChange={() => {
+            setTime(date.getHours(), parseInt(inputMins.current.value))
+          }}
           />
       </Flex>
     </div>
