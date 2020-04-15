@@ -4,6 +4,7 @@ import { Button, Flex, Text } from 'rebass'
 import { Box } from 'rebass/styled-components'
 import styled from 'styled-components'
 
+import { Middle } from './Shadow'
 import Controls from './Controls'
 import { TT } from './strings'
 
@@ -24,7 +25,7 @@ export const DatePicker = ({date, setDate, T}: {
   setDate: any,
   T: TT
 }) => {
-  const [active, setActive] = useState(false)
+  const [visible, setVisible] = useState(false)
   const _pick = (y: number, m: number, d: number) => {
     setDate(new Date(
       y, m, d, date.getHours(),
@@ -42,26 +43,20 @@ export const DatePicker = ({date, setDate, T}: {
   }
   return (<>
     <Button variant='ghost'
-      onClick={() => { setActive(true) }}
+      onClick={() => { setVisible(true) }}
       >
       {T.month.name[date.getMonth()]} {date.getDate()}, {date.getFullYear()}
     </Button>
-    <Box
-      display={active ? 'block' : 'none'}
-      sx={{ position: 'absolute' }}
-      >
+    {visible && <Middle dim close={() => { setVisible(false) }}>
       <Flex
         bg='text'
         color='back'
-        display={active ? 'flex' : 'none'}
+        display={visible ? 'flex' : 'none'}
         flexDirection='column'
         width={[270, 300, 400]}
         p={2} sx={{
           borderRadius: 'default',
           boxShadow: 'default',
-          position: 'absolute',
-          top: '-16.3em',
-          left: ['-8.4em', '-9.4em', '-12.4em'],
         }}
         >
         <Flex fontSize={3} py={3} pt='1.25em' justifyContent='space-around'>
@@ -85,8 +80,11 @@ export const DatePicker = ({date, setDate, T}: {
             >{n}</Cell>)}
           {seq(9).map(n => <Cell key={`B${n}`} opacity={0.58}>{n}</Cell>)}
         </Flex>
-        <Controls color='back' LeftIcon={() => <></>} rightAction={() => setActive(false)}/>
+        <Controls
+          color='back'
+          showLeftIcon={false}
+          rightAction={() => setVisible(false)}/>
       </Flex>
-    </Box>
+    </Middle>}
   </>)
 }

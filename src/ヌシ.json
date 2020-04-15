@@ -10,7 +10,8 @@
     "muted": "#454545",
     "gray": "#666",
     "darken": "#222",
-    "shadow": "rgba(0, 0, 0, 0.75)"
+    "shadow": "rgba(0, 0, 0, 0.72)",
+    "dimmedShadow": "rgba(0, 0, 0, 0.56)"
   },
   "fonts": {
     "body": "Inter, sans-serif",
