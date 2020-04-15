@@ -1,5 +1,5 @@
 import { createContext } from 'react'
-import { en, es, fr } from './strings.json'
+import { en,  es  ,fr  } from './strings.json'
 export const strings = (lang = 'en'): TT =>
   lang === 'es' ? es
 : lang === 'fr' ? fr
