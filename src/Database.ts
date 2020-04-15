@@ -21,18 +21,23 @@ class Cloud {
     this.state = fs.collection('state').doc('current')
     this.tasks = fs.collection('tasks')
   }
-  send = (task: Task, cb?: () => void, nid = false): void => {
+  delete = (task: Task, cbk = () => {}) => {
+    this.tasks.doc(task.id).delete().then(cbk)
+      .catch(console.error)
+  }
+  send = (task: Task, cbk?: () => void, nid = false): void => {
     this.tasks.doc(task.id).set({
       id: task.id,
       value: task.value,
       date: task.date,
-      checked: task.checked
+      checked: task.checked,
+      archived: task.archived
     }).then(() => {
-      cb && cb()
+      cbk && cbk()
       nid && this.state.get()
         .then(state => state.data())
         .then(data => {
-          if (data) this.state.set({counter: data.counter + 1})
+          if (data) this.state.set({ counter: data.counter + 1 })
         })
     })
   }
