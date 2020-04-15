@@ -1,19 +1,12 @@
 import React, { useState } from 'react'
-
-import { Button, Flex, Text } from 'rebass'
-import { Box } from 'rebass/styled-components'
-import styled from 'styled-components'
-
+import { Box, Button, Flex, Text } from 'rebass'
 import { Middle } from './Shadow'
 import Controls from './Controls'
 import { TT } from './strings'
 
-const Cell = styled(Box)`
-  padding: 0.5em 0;
-  line-height: 1;
-  text-align: center;
-  width: calc(100% / 7);
-`
+const CellSX={ lineHeight: 1, textAlign: 'center' }
+const Cell = (props: any) =>
+<Box width={1/7} py='0.5em' px={0} sx={CellSX} {...props}/>
 
 const seq = (O: number, A = 1) => {
   let seq = []; for (let i = A; i <= O; i++) seq.push(i)
@@ -69,20 +62,27 @@ export const DatePicker = ({date, setDate, T}: {
         </Flex>
         <Flex flexWrap='wrap' p={[1, 2, 2, 3]}>
           {T.day.symbol.map(l =>
-            <Cell key={l}>
-              <Text fontWeight='bold'>{l}</Text>
-            </Cell>
+            <Cell key={l} fontWeight='bold'>{l}</Cell>
           )}
           {seq(31, 29).map(n => <Cell key={`B${n}`} opacity={0.58}>{n}</Cell>)}
-          {seq(30).map(n => <Cell key={`A${n}`}
-            className={n === date.getDate() ? 'activeDate' : ''}
-            onClick={() => { pickDate(n) }}
-            >{n}</Cell>)}
+          {seq(30).map(n =>
+            <Cell
+              key={`A${n}`}
+              onClick={() => { pickDate(n) }}
+              sx={n === date.getDate() ? {
+                color: 'secondary',
+                fontWeight: 'heading',
+                ...CellSX
+              } :  CellSX}
+              >{n}
+            </Cell>)
+          }
           {seq(9).map(n => <Cell key={`B${n}`} opacity={0.58}>{n}</Cell>)}
         </Flex>
         <Controls
           color='back'
           showLeftIcon={false}
+          rightColor='secondary'
           rightAction={() => setVisible(false)}/>
       </Flex>
     </Middle>}

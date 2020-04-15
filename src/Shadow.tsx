@@ -2,7 +2,7 @@ import React from 'react'
 import { Box, Flex } from 'rebass'
 
 export const Middle = (props: any) =>
-  <Flex {...props}
+  <Flex
     alignItems='center'
     justifyContent='center'
     sx={{
@@ -13,7 +13,7 @@ export const Middle = (props: any) =>
       zIndex: 50 + (props.zIndex ? props.zIndex : 0),
     }} onClick={event => {
       if (event.target === event.currentTarget && props.close) props.close()
-    }} />
+    }} {...props} />
 
 export const Relative = (props: any) =>
   <Middle {...props}>
@@ -21,5 +21,5 @@ export const Relative = (props: any) =>
       position: 'relative',
       top: 0, right: 0, bottom: 0, left: 0,
       backgroundColor: 'transparent'
-    }} {...props.children} />
+    }} {...props} />
   </Middle>

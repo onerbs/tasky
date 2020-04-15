@@ -37,7 +37,7 @@
     "large": "0 0.4rem 1rem 3px rgba(0,0,0,0.64)"
   },
   "sizes": [50, 100, 200, 300, 400, 500, 12, 18, 24],
-  "space": [0, 4, 8, 16, 32, 48],
+  "space": [4, 8, 12, 16, 32, 48],
   "buttons": {
     "ghost": {
       "background": "transparent"
