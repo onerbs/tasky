@@ -31,7 +31,7 @@ export default class Task {
       .then(data => data ? `Task+${data.counter}` : 'Task+1')
       .then(id => new Task(value, date, false, id))
   }
-  static fromDocument = (data: firebase.firestore.DocumentData) =>
+  static fromDocumentData = (data: firebase.firestore.DocumentData) =>
     new Task(data.value, new Date(data.date.toMillis()), data.checked, data.id)
 }
 

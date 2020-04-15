@@ -38,8 +38,7 @@ class Cloud {
   }
   taskArray = async () => {
     return this.tasks.get().then(res => res.docs)
-      .then(docs => docs.map(doc => doc.data())
-                        .map(data => Task.fromDocument(data)))
+      .then(docs => docs.map(doc => Task.fromDocumentData(doc.data())))
   }
 }
 
