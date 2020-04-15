@@ -12,15 +12,36 @@ firebase.initializeApp({
   appId: "1:550018200555:web:178e122b85cfdcd5399fae"
 })
 
-export class Cloud {
-  static tasks = firebase.firestore().collection('tasks')
-  static write = (task: Task): void => {
-    Cloud.tasks.doc(task.id).set({...task}, { merge: true })
+const fs = firebase.firestore()
+
+class Cloud {
+  state: firebase.firestore.DocumentReference<firebase.firestore.DocumentData>
+  tasks: firebase.firestore.CollectionReference<firebase.firestore.DocumentData>
+  constructor() {
+    this.state = fs.collection('state').doc('current')
+    this.tasks = fs.collection('tasks')
   }
-  static retrieve = async () => {
-    let cloudTasks = await Cloud.tasks.get()
-    return cloudTasks.docs
-      .map(d => d.data())
-      .map(d => Task.fromDocument(d))
+  send = (task: Task, cb?: () => void, nid = false): void => {
+    this.tasks.doc(task.id).set({
+      id: task.id,
+      value: task.value,
+      date: task.date,
+      checked: task.checked
+    }).then(() => {
+      cb && cb()
+      nid && this.state.get()
+        .then(state => state.data())
+        .then(data => {
+          if (data) this.state.set({counter: data.counter + 1})
+        })
+    })
+  }
+  taskArray = async () => {
+    return this.tasks.get().then(res => res.docs)
+      .then(docs => docs.map(doc => doc.data())
+                        .map(data => Task.fromDocument(data)))
   }
 }
+
+const cloud = new Cloud()
+export default cloud
