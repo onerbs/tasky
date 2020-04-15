@@ -7,5 +7,15 @@ export interface TT {
     create: string
     update: string
     delete: string
+  },
+  day: {
+    name: string[],
+    abbr: string[],
+    symbol: string[]
+  },
+  month: {
+    name: string[],
+    abbr: string[],
+    symbol: string[]
   }
 }
