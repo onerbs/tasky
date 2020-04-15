@@ -5,15 +5,13 @@ import { Input } from '@rebass/forms'
 import Controls from './Controls'
 import { DatePicker } from './DatePicker'
 import { TimePicker } from './TimePicker'
-import { TT } from './strings'
 import cloud from './Database'
 import Task from './Task'
 
-export default ({updateview, hide = () => {}, T}: {
-  updateview: () => void,
-  hide: () => void,
-  T: TT
-}) => {
+import { Middle } from './Shadow'
+
+export default (props: any) => {
+  const { close, updateview, T } = props
   const [taskValue, setTaskValue] = useState('')
   const [date, setDate] = useState(() => {
     let d = new Date()
@@ -26,27 +24,17 @@ export default ({updateview, hide = () => {}, T}: {
   })
   const taskInput = useRef(null)
   return (
-    <Flex
-      alignItems='center'
-      justifyContent='center'
-      sx={{
-        position: 'absolute',
-        top: 0, right: 0, bottom: 0, left: 0,
-        backgroundColor: 'shadow',
-        backdropFilter: 'blur(30px)',
-      }}
-      >
+    <Middle {...props}>
       <Box
         backgroundColor='darken'
-        p={[0, 2, 3]} sx={{
-          position: 'relative',
+        width={[280, 340, 400, 500]}
+        px={0} py={[2, 4]} sx={{
           borderRadius: 'plus',
           userSelect: 'none'
         }}
-        width={[300, 350, 450]}
         >
         <Heading my={3}
-          fontSize={[4, 4, 5]}
+          fontSize={[4, 5]}
           textAlign={'center'}
           letterSpacing={-1}
           >
@@ -57,21 +45,28 @@ export default ({updateview, hide = () => {}, T}: {
           placeholder='Pet the dog'
           onChange={e => { setTaskValue(e.target.value) }}
           value={taskValue} width='100%'
-          py={3} sx={{ textAlign: 'center', fontSize: '1.15em' }}
+          py={[3, 3, 3, 4]} sx={{
+            textAlign: 'center',
+            fontSize: '1.15em'
+          }}
           />
         <Flex my={3} alignItems='center' justifyContent='space-around'>
           <DatePicker date={date} setDate={setDate} T={T}/>
           <TimePicker date={date} setDate={setDate}/>
         </Flex>
-        <Controls
-          leftAction={hide}
+        <Controls px={[4, 5]}
+          showLeftIcon={false}
           rightAction={() => {
-            Task.create(taskValue, date).then(task => {
-              cloud.send(task, updateview, true)
-            }); hide()
+            if (taskValue.trim() !== '') {
+              Task.create(taskValue, date).then(task => {
+                cloud.send(task, updateview, true)
+              }); close()
+            } else {
+              console.log(T.task.missing)
+            }
           }}
           />
       </Box>
-    </Flex>
+    </Middle>
   )
 }

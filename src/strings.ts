@@ -7,6 +7,7 @@ export interface TT {
     create: string
     update: string
     delete: string
+    missing: string
   },
   day: {
     name: string[],

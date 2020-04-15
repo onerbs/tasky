@@ -3,7 +3,8 @@
     "task": {
       "create": "Add new task",
       "update": "Update task",
-      "delete": "Complete task"
+      "delete": "Complete task",
+      "missing": "Write a task!"
     },
     "day": {
         "name": [
@@ -33,7 +34,8 @@
     "task": {
       "create": "Nueva tarea",
       "update": "Actualizar",
-      "delete": "Completar"
+      "delete": "Completar",
+      "missing": "¡Escribe una tarea!"
     },
     "day": {
         "name": [
@@ -63,7 +65,8 @@
     "task": {
       "create": "Add new task",
       "update": "Update task",
-      "delete": "Complete task"
+      "delete": "Complete task",
+      "missing": "Write a task!"
     },
     "day": {
         "name": [

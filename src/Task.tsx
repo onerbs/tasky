@@ -78,10 +78,11 @@ return(
   </Flex>
 )}
 
-export const Viewer = ({data, T}: { data: Task[], T: TT }) => {
+export const Viewer = (props: any) => {
+  const { data, T } = props
   return data ? (
-    <Box m={0}>
-      {data.map(task => <Item key={task.id} task={task} T={T}/>)}
+    <Box overflow='overlay' mx={'24px'} {...props}>
+      {data.map((task: Task) => <Item key={task.id} task={task} T={T}/>)}
     </Box>
    ) : <></>
 }

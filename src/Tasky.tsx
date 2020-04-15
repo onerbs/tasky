@@ -1,5 +1,5 @@
 import React, { Suspense, lazy, useEffect, useState } from 'react'
-import { Box, Heading } from 'rebass'
+import { Flex, Heading } from 'rebass'
 import { Menu, Plus } from 'react-feather'
 
 import Task, { Viewer } from './Task'
@@ -17,7 +17,7 @@ export default () => {
 
   const [lang, setLang] = useState('es')
   const [localTasks, setLocalTasks] = useState(new Array<Task>())
-  const [modalState, setModalState] = useState(false)
+  const [modalState, showModal] = useState(false)
   const [T, loadStrings] = useState(strings(lang))
 
   const updateView = () => {
@@ -29,43 +29,49 @@ export default () => {
 
   return (
     <ThemeProvider theme={ヌシ}>
-      <Box color='text'
+      <Flex p={[0, 3, 4, 5]}
+        color='text'
         backgroundColor='back'
-        height='100vh' pt={3}
+        height='100vh'
+        flexDirection={[
+          'column-reverse',
+          'column-reverse',
+          'column'
+        ]}
         >
-        <Heading
-          color='primary'
-          fontSize={[6, 6, 7]}
-          marginBottom={['auto','auto','1.5rem']}
-          textAlign='center'
-          letterSpacing='heading'
-          onClick={() => { setLang(lang === 'en' ? 'es' : 'en') }} //!COMMIT
-          sx={{
-            position: 'absolute',
-            bottom: 0,
-            left: 0,
-            right: 0
-          }}
-          >
-          Tasky
-        </Heading>
-        <Viewer T={T} data={localTasks}/>
-        <div id="controls">
+        <Flex sx={{
+            bg: 'back',
+            position: 'fixed',
+            textAlign: 'center',
+            left: [0, 0, '20%'],
+            right: [0, 0, '20%'],
+            top: 0 }}
+            alignItems='center'
+            justifyContent='center'>
+          <Heading mt={['5pt', '5pt', 0]}
+            color='primary'
+            fontSize={[6, 6, 7]}
+            letterSpacing={[-5, -5, -7]}
+            > Tasky </Heading>
+        </Flex>
+        <div>
           <Controls
             LeftIcon={Menu}
             RightIcon={Plus}
-            rightAction={() => {
-              setModalState(true)
-            }}
+            rightAction={() => { showModal(true) }}
             />
         </div>
-        <Suspense fallback={<></>}>
-          {modalState && <Modal T={T}
-            hide={() => { setModalState(false) }}
+        <Viewer mt={['5em', '5em', 0]} T={T} data={localTasks}/>
+      </Flex>
+      <Suspense fallback={<></>}>
+        {modalState &&
+          <Modal T={T} color='text'
+            backgroundColor='modal'
+            close={() => { showModal(false) }}
             updateview={updateView}
-            />}
-        </Suspense>
-      </Box>
+            />
+        }
+      </Suspense>
     </ThemeProvider>
   )
 }
