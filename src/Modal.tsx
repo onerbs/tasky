@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react'
+import React, { useContext, useRef, useState } from 'react'
 import { Box, Flex, Heading } from 'rebass'
 import { Input } from '@rebass/forms'
 
@@ -9,9 +9,10 @@ import cloud from './Database'
 import Task from './Task'
 
 import { Middle } from './Shadow'
+import { LanguageContext } from './strings'
 
 export default (props: any) => {
-  const { close, updateview, T } = props
+  const { close, updateview } = props
   const [taskValue, setTaskValue] = useState('')
   const [date, setDate] = useState(() => {
     let d = new Date()
@@ -23,6 +24,7 @@ export default (props: any) => {
     )
   })
   const taskInput = useRef(null)
+  const T = useContext(LanguageContext)
   return (
     <Middle {...props}>
       <Box
@@ -51,7 +53,7 @@ export default (props: any) => {
           }}
           />
         <Flex my={3} alignItems='center' justifyContent='space-around'>
-          <DatePicker date={date} setDate={setDate} T={T}/>
+          <DatePicker date={date} setDate={setDate}/>
           <TimePicker date={date} setDate={setDate}/>
         </Flex>
         <Controls px={[4, 5]}

@@ -1,8 +1,8 @@
-import React, { useState } from 'react'
+import React, { useContext, useState } from 'react'
 import { Box, Button, Flex, Text } from 'rebass'
 import { Middle } from './Shadow'
 import Controls from './Controls'
-import { TT } from './strings'
+import { LanguageContext } from './strings'
 
 const CellSX={ lineHeight: 1, textAlign: 'center' }
 const Cell = (props: any) =>
@@ -13,11 +13,8 @@ const seq = (O: number, A = 1) => {
   return seq
 }
 
-export const DatePicker = ({date, setDate, T}: {
-  date: Date,
-  setDate: any,
-  T: TT
-}) => {
+export const DatePicker = ({date, setDate}: { date: Date, setDate: any }) => {
+  const T = useContext(LanguageContext)
   const [visible, setVisible] = useState(false)
   const _pick = (y: number, m: number, d: number) => {
     setDate(new Date(

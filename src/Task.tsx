@@ -1,8 +1,9 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useContext, useEffect, useRef, useState } from 'react'
 import { Box, Flex, Text } from 'rebass'
 import { Input } from '@rebass/forms'
-import { CheckSquare, Square } from 'react-feather'
-import { TT } from './strings'
+import { Archive, CheckSquare, Square, Trash } from 'react-feather'
+import { LanguageContext } from './strings'
+import { ModeContext } from './Tasky'
 import cloud from './Database'
 
 export default class Task {
@@ -35,11 +36,15 @@ export default class Task {
     new Task(data.value, new Date(data.date.toMillis()), data.checked, data.id)
 }
 
-const Item = ({task, T}: { task: Task, T: TT }) => {
+const Item = ({task}: { task: Task }) => {
   const {id, value, date, checked} = task
   const [localValue, setLocalValue] = useState(value)
   const [localChecked, setLocalChecked] = useState(checked)
   const input = useRef(document.createElement('input'))
+
+  const mode = useContext(ModeContext)
+  const T = useContext(LanguageContext)
+
   const uv = (nova: string) => {
     if (value !== nova) cloud.send(new Task(nova, date, localChecked, id))
   }
@@ -70,19 +75,21 @@ return(
         {fmtDate(date)}
       </Text>
     </Box>
-    <Box ml={3} onClick={() => {
-      cloud.send(new Task(localValue, date, !localChecked, id))
-      setLocalChecked(!localChecked)
-    }}>{localChecked ? <CheckSquare/> : <Square/>}
-    </Box>
+    { mode === 1 ? <Box onClick={() => { console.log('deletee') }}><Trash/></Box>
+    : mode === 2 ? <Box onClick={() => { console.log('archive') }}><Archive/></Box>
+    : <Box ml={3} onClick={() => {
+        cloud.send(new Task(localValue, date, !localChecked, id))
+        setLocalChecked(!localChecked)
+      }}>
+        {localChecked ? <CheckSquare/> : <Square/>}
+      </Box>
+    }
   </Flex>
 )}
 
-export const Viewer = (props: any) => {
-  const { data, T } = props
-  return data ? (
-    <Box overflow='overlay' mx={'24px'} {...props}>
-      {data.map((task: Task) => <Item key={task.id} task={task} T={T}/>)}
+export const Viewer = ({data}: { data: Task[] }) =>
+  data ? (
+    <Box overflow='overlay' mx={'24px'} mt={['5em', '5em', 0]}>
+      {data.map((task: Task) => <Item key={task.id} task={task}/>)}
     </Box>
-   ) : <></>
-}
+  ) : <></>
