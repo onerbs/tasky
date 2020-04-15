@@ -1,10 +1,4 @@
-import React from 'react'
-import ReactDOM from 'react-dom'
+import React, { StrictMode } from 'react'
+import { render } from 'react-dom'
 import Tasky from './Tasky'
-
-ReactDOM.render(
-  <React.StrictMode>
-    <Tasky/>
-  </React.StrictMode>,
-  document.getElementById('Tasky')
-)
+render (<StrictMode><Tasky/></StrictMode>, document.getElementById('Tasky'))

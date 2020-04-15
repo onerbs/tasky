@@ -16,3 +16,6 @@ input {
     width: 100%;
     bottom: 0;
 }
+.activeDate {
+    font-weight: bold;
+}
