@@ -12,7 +12,7 @@ import { Middle } from './Shadow'
 import { LanguageContext } from './strings'
 
 export default (props: any) => {
-  const { close, updateview } = props
+  const { close, refresh } = props
   const [taskValue, setTaskValue] = useState('')
   const [date, setDate] = useState(() => {
     let d = new Date()
@@ -61,7 +61,7 @@ export default (props: any) => {
           rightAction={() => {
             if (taskValue.trim() !== '') {
               Task.create(taskValue, date).then(task => {
-                cloud.send(task, updateview, true)
+                cloud.send(task, refresh, true)
               }); close()
             } else {
               console.log(T.task.missing)

@@ -1,4 +1,4 @@
 import React, { StrictMode } from 'react'
 import { render } from 'react-dom'
-import Tasky from './Tasky'
-render (<StrictMode><Tasky/></StrictMode>, document.getElementById('Tasky'))
+import { App } from './App'
+render (<StrictMode><App/></StrictMode>, document.getElementById('Tasky'))
