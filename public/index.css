@@ -1,8 +1,18 @@
-*,*::before,*::after{
+*, *::before, *::after {
     box-sizing:border-box
 }
+*::-webkit-scrollbar {
+    opacity: 0;
+    width: 8px;
+}
+*::-webkit-scrollbar-thumb {
+    background-color: #FFBC52;
+    border-radius: 4px;
+}
 body {
-    margin:0;padding:0;overflow:hidden
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
 }
 button, input {
     font-family: Inter, sans-serif;
@@ -11,11 +21,9 @@ button, input {
 input {
     border: none !important;
 }
-#controls {
-    position: fixed;
-    width: 100%;
-    bottom: 0;
-}
 .activeDate {
     font-weight: bold;
+}
+input[type=number]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
 }
