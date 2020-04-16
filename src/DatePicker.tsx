@@ -2,7 +2,7 @@ import React, { useContext, useState } from 'react'
 import { Box, Button, Flex, Text } from 'rebass'
 import { Middle } from './Shadow'
 import Controls from './Controls'
-import { LanguageContext } from './strings'
+import { Context } from './Context'
 
 const CellSX={ lineHeight: 1, textAlign: 'center' }
 const Cell = (props: any) =>
@@ -14,7 +14,7 @@ const seq = (O: number, A = 1) => {
 }
 
 export const DatePicker = ({date, setDate}: { date: Date, setDate: any }) => {
-  const T = useContext(LanguageContext)
+  const { lang } = useContext(Context)
   const [visible, setVisible] = useState(false)
   const _pick = (y: number, m: number, d: number) => {
     setDate(new Date(
@@ -35,7 +35,7 @@ export const DatePicker = ({date, setDate}: { date: Date, setDate: any }) => {
     <Button variant='ghost'
       onClick={() => { setVisible(true) }}
       >
-      {T.month.name[date.getMonth()]} {date.getDate()}, {date.getFullYear()}
+      {lang.month.name[date.getMonth()]} {date.getDate()}, {date.getFullYear()}
     </Button>
     {visible && <Middle dim close={() => { setVisible(false) }}>
       <Flex
@@ -51,14 +51,14 @@ export const DatePicker = ({date, setDate}: { date: Date, setDate: any }) => {
         >
         <Flex fontSize={3} py={3} pt='1.25em' justifyContent='space-around'>
           <Text letterSpacing={3} lineHeight='1'>
-            {T.month.name[date.getMonth()]}
+            {lang.month.name[date.getMonth()]}
           </Text>
           <Text letterSpacing={3} lineHeight='1'>
             {date.getFullYear()}
           </Text>
         </Flex>
         <Flex flexWrap='wrap' p={[1, 2, 2, 3]}>
-          {T.day.symbol.map(l =>
+          {lang.day.symbol.map(l =>
             <Cell key={l} fontWeight='bold'>{l}</Cell>
           )}
           {seq(31, 29).map(n => <Cell key={`B${n}`} opacity={0.58}>{n}</Cell>)}

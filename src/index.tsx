@@ -1,4 +1,13 @@
 import React, { StrictMode } from 'react'
 import { render } from 'react-dom'
-import { App } from './App'
-render (<StrictMode><App/></StrictMode>, document.getElementById('Tasky'))
+import { ContextProvider } from './Context'
+import App from './App'
+
+render (
+  <StrictMode>
+    <ContextProvider>
+      <App/>
+    </ContextProvider>
+  </StrictMode>,
+  document.getElementById('Tasky')
+)

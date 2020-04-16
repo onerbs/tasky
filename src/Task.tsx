@@ -2,57 +2,56 @@ import React, { useContext, useEffect, useRef, useState } from 'react'
 import { Box, Flex, Text } from 'rebass'
 import { Input } from '@rebass/forms'
 import { Archive, CheckSquare, Square, Trash } from 'react-feather'
-import { LanguageContext } from './strings'
-import { ModeContext } from './Tasky'
+import { Context } from './Context'
 import cloud from './Database'
 
-const Item = ({task, refresh}: { task: Task, refresh: () => void }) => {
+const Item = ({task}: { task: Task }) => {
+  const { lang, mode, data, setData } = useContext(Context)
   const {id, value, date, checked, archived} = task
-  const [localValue, setLocalValue] = useState(value)
-  const [localChecked, setLocalChecked] = useState(checked)
+
+  const [_value, setValue] = useState(value)
+  const [_checked, setChecked] = useState(checked)
+
   const input = useRef(document.createElement('input'))
 
-  const mode = useContext(ModeContext)
-  const T = useContext(LanguageContext)
-
-  const uv = (nova: string) => {
-    if (value !== nova) cloud.send(new Task(nova, date, localChecked, archived, id))
+  const _setValue = (nova: string) => {
+    if (value !== nova) cloud.send(new Task(nova, date, _checked, archived, id))
   }
   const fmtDate = (d: Date) =>
-    `${T.day.name[d.getDay()]}, ${T.month.name[d.getMonth()]} ${d.getDate()} ${d.getHours()}:${d.getMinutes()}`
-  useEffect(() => { setLocalValue(value) }, [value])
+    `${lang.day.name[d.getDay()]}, ${lang.month.name[d.getMonth()]} ${d.getDate()} ${d.getHours()}:${d.getMinutes()}`
+  useEffect(() => { setValue(value) }, [value])
 
 return (
   <Flex m='0 auto' p={3}
     maxWidth='600px'
     alignItems='center'
     >
-    <Box width={0}>
+    <Box width='100%'>
       <Input
-        disabled={localChecked} fontSize={[4, 4, 5]} mb={1} p={0}
-        ref={input} sx={{ border: 'none' }} value={localValue}
-        onBlur={() => { uv(localValue) }}
-        onChange={() => { setLocalValue(input.current.value) }}
-        onKeyPress={ev => { if (ev.key === 'Enter') uv(localValue) }}
+        disabled={_checked} fontSize={[4, 4, 5]} mb={1} p={0}
+        ref={input} sx={{ border: 'none' }} value={_value}
+        onBlur={() => { _setValue(_value) }}
+        onChange={() => { setValue(input.current.value) }}
+        onKeyPress={ev => { if (ev.key === 'Enter') _setValue(_value) }}
         />
       <Text fontSize={[1, 1, 1, 2]} opacity={0.8}
         > {fmtDate(date)} </Text>
     </Box>
-    { mode === 1 ? <Box onClick={() => { cloud.delete(task, refresh)}}><Trash/></Box>
-    : mode === 2 ? <Box onClick={() => { cloud.send(task.archive()) }}><Archive/></Box>
-    : <Box ml={3} onClick={() => {
-        cloud.send(new Task(localValue, date, !localChecked, archived, id))
-        setLocalChecked(!localChecked)
+    { mode === 1 ? <Box mr='2px' onClick={() => { cloud.delete(task.id); setData(data.filter(t => t.id !== task.id)) }}><Trash/></Box>
+    : mode === 2 ? <Box mr='2px' onClick={() => { cloud.send(task.archive()) }}><Archive/></Box>
+    : <Box mr='2px' onClick={() => {
+        cloud.send(new Task(_value, date, !_checked, archived, id))
+        setChecked(!_checked)
       }}>
-        {localChecked ? <CheckSquare/> : <Square/>}
+        {_checked ? <CheckSquare/> : <Square/>}
       </Box>
     }
   </Flex>
 )}
 
-export const Viewer = ({data, refresh}: { data: Task[], refresh: () => void }) =>
-<Box overflow='overlay' mx={'24px'} mt={['5em', '5em', 0]}>
-  {data.map(task => <Item key={task.id} task={task} refresh={refresh}/>)}
+export const Viewer = () =>
+<Box overflow='overlay'>
+  {useContext(Context).data.map(task => <Item key={task.id} task={task}/>)}
 </Box>
 
 export default class Task {

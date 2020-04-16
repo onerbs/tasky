@@ -1,6 +1,6 @@
-import { createContext } from 'react'
 import { en,  es  ,fr  } from './strings.json'
-export const strings = (lang = 'en'): TT =>
+
+export default (lang = 'en'): TT =>
   lang === 'es' ? es
 : lang === 'fr' ? fr
 : en
@@ -23,5 +23,3 @@ export interface TT {
     symbol: string[]
   }
 }
-
-export const LanguageContext = createContext(strings())
