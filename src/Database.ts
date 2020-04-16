@@ -21,30 +21,22 @@ class Cloud {
     this.state = fs.collection('state').doc('current')
     this.tasks = fs.collection('tasks')
   }
-  delete = (task: Task, cbk = () => {}) => {
-    this.tasks.doc(task.id).delete().then(cbk)
-      .catch(console.error)
-  }
-  send = (task: Task, cbk?: () => void, nid = false): void => {
-    this.tasks.doc(task.id).set({
-      id: task.id,
-      value: task.value,
-      date: task.date,
-      checked: task.checked,
-      archived: task.archived
-    }).then(() => {
-      cbk && cbk()
-      nid && this.state.get()
-        .then(state => state.data())
-        .then(data => {
-          if (data) this.state.set({ counter: data.counter + 1 })
-        })
-    })
-  }
-  taskArray = async () => {
-    return this.tasks.get().then(res => res.docs)
-      .then(docs => docs.map(doc => Task.fromDocumentData(doc.data())))
-  }
+  delete = (id: string) => this.tasks.doc(id).delete()
+  send = (task: Task, nid = false) => this.tasks.doc(task.id).set({
+    id: task.id,
+    value: task.value,
+    date: task.date,
+    checked: task.checked,
+    archived: task.archived
+  }).then(() => {
+    nid && this.state.get()
+      .then(state => state.data())
+      .then(data => {
+        if (data) this.state.set({ counter: data.counter + 1 })
+      })
+  })
+  taskArray = () => this.tasks.get().then(res => res.docs)
+    .then(docs => docs.map(doc => Task.fromDocumentData(doc.data())))
 }
 
 const cloud = new Cloud()
